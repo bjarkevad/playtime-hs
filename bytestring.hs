@@ -19,13 +19,13 @@ serializedHB :: BL.ByteString
 serializedHB =  runPut (serializeHeader teststart >> serializeHeartBeat testhb) 
 
 serializedChk :: BL.ByteString
-serializedChk = runPut (serializeChecksum (FrameChk $ crcCalculate serializedHB))
+serializedChk = runPut (serializeChecksum (crcCalculate serializedHB))
 
 testhb :: HeartBeat
 testhb = HeartBeat 2 0 208 0 4 123
 
 teststart :: FrameStart 
-teststart = FrameStart 0xFE 9 0 1 2 0
+teststart = FrameStart 0xFE 9 0 1 200 0
 
 data FrameStart = FrameStart { 
     start :: Word8,
@@ -36,7 +36,7 @@ data FrameStart = FrameStart {
     msgid :: Word8
 }
 
-data FrameChk = FrameChk Word16 deriving Show
+type FrameChk = Word16
 
 data HeartBeat = HeartBeat {
     typet :: Word8,
@@ -57,8 +57,7 @@ serializeHeader f = do
     putWord8 $ msgid f
 
 serializeChecksum :: FrameChk -> Put
-serializeChecksum (FrameChk c) = 
-    putWord16be c
+serializeChecksum = putWord16be
 
 serializeHeartBeat :: HeartBeat -> Put
 serializeHeartBeat h = do
