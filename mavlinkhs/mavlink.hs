@@ -1,8 +1,3 @@
-import qualified Data.ByteString.Lazy as BL
-import qualified Data.ByteString.Lazy.Char8 as C
-import Data.Binary.Put
-import GHC.Word (Word8, Word16, Word32)
-import CRC
 
 --main = C.putStrLn serializedHB 
     -- putStrLn $ show $ crcCalculate serializedHB -- $ BS.append serializedHB serializedChk
@@ -12,20 +7,28 @@ import CRC
     -- print (crcCalculate $ BS.pack [0xfe, 0x09, 0x00, 0x01, 0x02, 0x00, 0x02, 0x00, 0xd0, 0x00, 0x00, 0x00, 0x00, 0x04, 0x7b, 0x1b])
     --print (crcCalculate $ BS.pack [0,1,2,127,255])
 
-main :: IO ()
-main = C.putStr $ BL.append serializedHB serializedChk
+--main :: IO ()
+--main = C.putStr $ BL.append serializedHB serializedChk
 
-serializedHB :: BL.ByteString
+{-serializedHB :: BL.ByteString
 serializedHB =  runPut (serializeHeader teststart >> serializeHeartBeat testhb) 
 
 serializedChk :: BL.ByteString
 serializedChk = runPut (serializeChecksum (crcCalculate serializedHB))
 
 testhb :: HeartBeat
-testhb = HeartBeat 2 0 208 0 4 123
+testhb = HeartBeat 2 0 208 0 4 3 
 
 teststart :: FrameStart 
-teststart = FrameStart 0xFE 9 0 1 200 0
+teststart = FrameStart 0xFE 9 0 1 200 0-}
+
+module MAVLinkHS.MAVLink where
+
+--import qualified Data.ByteString.Lazy as BL
+--import qualified Data.ByteString.Lazy.Char8 as C
+import Data.Binary.Put
+import GHC.Word (Word8, Word16, Word32)
+--import CRC
 
 data FrameStart = FrameStart { 
     start :: Word8,
@@ -61,9 +64,9 @@ serializeChecksum = putWord16be
 
 serializeHeartBeat :: HeartBeat -> Put
 serializeHeartBeat h = do
+   putWord32be $ custommode h
    putWord8 $ typet h 
    putWord8 $ autopilot h 
    putWord8 $ basemode h 
-   putWord32be $ custommode h
    putWord8 $ systemstatus h
    putWord8 $ version h

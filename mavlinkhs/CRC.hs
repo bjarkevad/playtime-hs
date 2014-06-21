@@ -1,4 +1,4 @@
-module CRC where
+module MAVLinkHS.CRC where
 import qualified Data.ByteString.Lazy as BS
 import GHC.Word (Word8, Word16)
 import Data.Bits
