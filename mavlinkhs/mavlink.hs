@@ -1,34 +1,8 @@
-
---main = C.putStrLn serializedHB 
-    -- putStrLn $ show $ crcCalculate serializedHB -- $ BS.append serializedHB serializedChk
--- main = putStrLn $ show $ FrameChk (crcCalculate serializedHB)
-    --putStr "SerializedHB: "
-    --putStr "Checksum: "
-    -- print (crcCalculate $ BS.pack [0xfe, 0x09, 0x00, 0x01, 0x02, 0x00, 0x02, 0x00, 0xd0, 0x00, 0x00, 0x00, 0x00, 0x04, 0x7b, 0x1b])
-    --print (crcCalculate $ BS.pack [0,1,2,127,255])
-
---main :: IO ()
---main = C.putStr $ BL.append serializedHB serializedChk
-
-{-serializedHB :: BL.ByteString
-serializedHB =  runPut (serializeHeader teststart >> serializeHeartBeat testhb) 
-
-serializedChk :: BL.ByteString
-serializedChk = runPut (serializeChecksum (crcCalculate serializedHB))
-
-testhb :: HeartBeat
-testhb = HeartBeat 2 0 208 0 4 3 
-
-teststart :: FrameStart 
-teststart = FrameStart 0xFE 9 0 1 200 0-}
-
 module MAVLinkHS.MAVLink where
 
---import qualified Data.ByteString.Lazy as BL
---import qualified Data.ByteString.Lazy.Char8 as C
 import Data.Binary.Put
-import GHC.Word (Word8, Word16, Word32)
---import CRC
+import Data.Binary.Get
+import Data.Binary
 
 data FrameStart = FrameStart { 
     start :: Word8,
@@ -39,34 +13,23 @@ data FrameStart = FrameStart {
     msgid :: Word8
 }
 
-type FrameChk = Word16
+data FrameChk = FrameChk Word16
 
-data HeartBeat = HeartBeat {
-    typet :: Word8,
-    autopilot :: Word8,
-    basemode :: Word8,
-    custommode :: Word32,
-    systemstatus :: Word8,
-    version :: Word8
-}
+instance Binary FrameStart where
+    put f = do
+        putWord8 $ start f
+        putWord8 $ len f
+        putWord8 $ sequ f
+        putWord8 $ sysid f
+        putWord8 $ compid f
+        putWord8 $ msgid f
 
-serializeHeader :: FrameStart -> Put 
-serializeHeader f = do 
-    putWord8 $ start f
-    putWord8 $ len f
-    putWord8 $ sequ f
-    putWord8 $ sysid f
-    putWord8 $ compid f
-    putWord8 $ msgid f
+    get = undefined 
 
-serializeChecksum :: FrameChk -> Put
-serializeChecksum = putWord16be
+instance Binary FrameChk where
+    put (FrameChk w) = 
+        putWord16be w
 
-serializeHeartBeat :: HeartBeat -> Put
-serializeHeartBeat h = do
-   putWord32be $ custommode h
-   putWord8 $ typet h 
-   putWord8 $ autopilot h 
-   putWord8 $ basemode h 
-   putWord8 $ systemstatus h
-   putWord8 $ version h
+    get = do 
+        w <- getWord16be
+        return (FrameChk w)
