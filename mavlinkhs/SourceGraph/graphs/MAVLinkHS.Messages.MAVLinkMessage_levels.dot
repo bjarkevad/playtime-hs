@@ -1,0 +1,13 @@
+digraph "Levels within MAVLinkHS.Messages.MAVLinkMessage" {
+    node [margin="0.4,0.1"
+         ,style=filled];
+    subgraph cluster_0 {
+        graph [label="Exported root entities"
+              ,style=filled
+              ,fillcolor=lavender];
+        1 [label="Class: MAVLinkMessage"
+          ,shape=doubleoctagon
+          ,fillcolor=gold
+          ,style="filled,bold"];
+    }
+}

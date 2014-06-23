@@ -1,0 +1,55 @@
+digraph "Levels within MAVLinkHS.CRC" {
+    node [margin="0.4,0.1"
+         ,style=filled];
+    subgraph cluster_0 {
+        graph [label="Exported root entities"
+              ,style=filled
+              ,fillcolor=lavender];
+        2 [label=crcCalculate
+          ,shape=box
+          ,fillcolor=goldenrod
+          ,style="filled,bold"];
+        3 [label=crcCalculateExtra
+          ,shape=box
+          ,fillcolor=gold
+          ,style="filled,bold"];
+    }
+    subgraph cluster_1 {
+        graph [label="Level = 1"
+              ,style=filled
+              ,fillcolor=lavender];
+        1 [label=crcAccumulate
+          ,shape=box
+          ,fillcolor=bisque
+          ,style="filled,bold"];
+        6 [label=swapBytes
+          ,shape=box
+          ,fillcolor=bisque
+          ,style="filled,bold"];
+    }
+    subgraph cluster_2 {
+        graph [label="Level = 2"
+              ,style=filled
+              ,fillcolor=lavender];
+        4 [label=highByte
+          ,shape=box
+          ,fillcolor=cyan
+          ,style="filled,bold"];
+        5 [label=lowByte
+          ,shape=box
+          ,fillcolor=cyan
+          ,style="filled,bold"];
+        7 [label=toWord8
+          ,shape=box
+          ,fillcolor=cyan
+          ,style="filled,bold"];
+    }
+    1 -> 7 [penwidth=1
+           ,color=chartreuse];
+    2 -> 1 [penwidth=1,color=black];
+    2 -> 6 [penwidth=1,color=black];
+    3 -> 2 [penwidth=1
+           ,color=chartreuse];
+    6 -> 4 [penwidth=1,color=black];
+    6 -> 5 [penwidth=1,color=black];
+}

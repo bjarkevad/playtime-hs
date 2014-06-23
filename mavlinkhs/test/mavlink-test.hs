@@ -40,20 +40,25 @@ main = do
     print $ asHex chkMessage
     putStrLn "Full message: "
     print $ asHex unpacked
+    putStrLn "Finalized Message: "
+    print $ asHex finalizedMessage
+
     where
         asHex :: String -> [String]
         asHex = map (printf "0x%02x")
         unpacked :: String
         unpacked = C.unpack $ BL.append serializedHB serializedChk 
         chkMessage :: String
-        chkMessage = C.unpack $ BL.snoc (BL.tail serializedHB) (ML.extraCRC testhb)
+        chkMessage = C.unpack $ BL.snoc (BL.tail serializedHB) (ML.crcExtra testhb)
+        finalizedMessage :: String
+        finalizedMessage = C.unpack $ finalizeMessage teststart testhb 
 
 
 serializedHB :: BL.ByteString
 serializedHB =  runPut (put teststart >> put testhb) 
 
 serializedChk :: BL.ByteString
-serializedChk = runPut $ put (crcCalculateExtra serializedHB testhb)
+serializedChk = runPut $ put (crcCalculateExtra serializedHB (ML.crcExtra testhb))
 
 testhb :: HeartBeat
 testhb = HeartBeat 2 0 216 0 4 3 

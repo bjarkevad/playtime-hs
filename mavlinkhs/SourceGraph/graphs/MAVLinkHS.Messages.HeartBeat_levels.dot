@@ -1,0 +1,50 @@
+digraph "Levels within MAVLinkHS.Messages.HeartBeat" {
+    node [margin="0.4,0.1"
+         ,style=filled];
+    subgraph cluster_0 {
+        graph [label="Exported root entities"
+              ,style=filled
+              ,fillcolor=lavender];
+        1 [label="Data: HeartBeat"
+          ,shape=box3d
+          ,fillcolor=goldenrod
+          ,style="filled,bold"];
+        7 [label=heartBeatCRC
+          ,shape=box
+          ,fillcolor=gold
+          ,style="filled,bold"];
+        8 [label=heartBeatLen
+          ,shape=box
+          ,fillcolor=gold
+          ,style="filled,bold"];
+        14 [label="MAVLinkHS.Messages.MAVLinkMessage\nClass: MAVLinkMessage"
+           ,shape=doubleoctagon
+           ,fillcolor=khaki
+           ,style="filled,solid"];
+        16 [label="Unknown Module\nClass: Binary"
+           ,shape=doubleoctagon
+           ,fillcolor=khaki
+           ,style="filled,dotted"];
+    }
+    subgraph cluster_1 {
+        graph [label="Level = 1"
+              ,style=filled
+              ,fillcolor=lavender];
+        4 [label="Class: MAVLinkMessage, Data: HeartBeat"
+          ,shape=octagon
+          ,fillcolor=cyan
+          ,style="filled,bold"];
+        6 [label="Class: Binary, Data: HeartBeat"
+          ,shape=octagon
+          ,fillcolor=bisque
+          ,style="filled,bold"];
+    }
+    6 -> 1 [penwidth=2.9459101490553135
+           ,color=chartreuse];
+    14 -> 4 [penwidth=1.6931471805599454
+            ,color=navy
+            ,dir=none];
+    16 -> 6 [penwidth=1.6931471805599454
+            ,color=navy
+            ,dir=none];
+}

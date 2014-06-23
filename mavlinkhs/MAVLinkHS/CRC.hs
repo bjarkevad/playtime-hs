@@ -2,10 +2,9 @@ module MAVLinkHS.CRC (crcCalculate, crcCalculateExtra) where
 import qualified Data.ByteString.Lazy as BS
 import GHC.Word (Word8, Word16)
 import Data.Bits
-import qualified MAVLinkHS.Messages.MAVLinkMessage as ML
 
-crcCalculateExtra :: ML.MAVLinkMessage m => BS.ByteString -> m -> Word16
-crcCalculateExtra bs msg = crcCalculate (BS.snoc (BS.tail bs) (ML.extraCRC msg))
+crcCalculateExtra :: BS.ByteString -> Word8 -> Word16
+crcCalculateExtra bs extra = crcCalculate $ BS.snoc (BS.tail bs) extra
 
 crcCalculate :: BS.ByteString -> Word16
 crcCalculate bs = swapBytes $ BS.foldl crcAccumulate initValue bs
@@ -23,9 +22,9 @@ crcAccumulate a w =
 toWord8 :: Word16 -> Word8
 toWord8 x = fromIntegral x .&. 0xFF
 lowByte :: Word16 -> Word16
-lowByte x = (x .&. 0xFF)
+lowByte x = x .&. 0xFF
 highByte :: Word16 -> Word16
-highByte x = (x `shiftR` 8)
+highByte x = x `shiftR` 8
 
 swapBytes :: Word16 -> Word16
-swapBytes w = ((lowByte w) `shiftL` 8) .|. (highByte w)
+swapBytes w = lowByte w `shiftL` 8 .|. highByte w

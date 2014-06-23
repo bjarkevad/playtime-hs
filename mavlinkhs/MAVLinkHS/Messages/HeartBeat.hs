@@ -16,7 +16,7 @@ data HeartBeat = HeartBeat {
 
 instance MAVLinkMessage HeartBeat where
     length _ = 9
-    extraCRC _ = 50
+    crcExtra _ = 50
 
 instance Binary HeartBeat where
     put h = do 

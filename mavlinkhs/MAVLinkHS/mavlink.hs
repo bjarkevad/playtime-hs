@@ -3,7 +3,8 @@ module MAVLinkHS.MAVLink where
 import Data.Binary.Put
 import Data.Binary.Get
 import Data.Binary
-import MAVLinkHS.Messages.MAVLinkMessage
+import MAVLinkHS.Messages.MAVLinkMessage 
+import MAVLinkHS.CRC
 import qualified Data.ByteString.Lazy as BL
 
 data FrameStart = FrameStart { 
@@ -36,6 +37,12 @@ instance Binary FrameChk where
         w <- getWord16be
         return (FrameChk w)
 
--- |Combines a frame with a message and calculates its CRC value
-finalizeMessage :: MAVLinkMessage m => FrameStart -> m -> BL.ByteString
-finalizeMessage f m = undefined
+
+-- |Combines a frame with a message and calculates and appends its calculated CRC value
+finalizeMessage :: MAVLinkMessage m => Binary m => FrameStart -> m -> BL.ByteString
+finalizeMessage f m = BL.append message $ checksum message
+    where 
+        message :: BL.ByteString
+        message = runPut $ put f >> put m
+        checksum :: BL.ByteString -> BL.ByteString
+        checksum bs = runPut $ put $ crcCalculateExtra bs (crcExtra m)
