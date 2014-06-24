@@ -1,1 +1,4 @@
 .cabal-sandbox/*
+SourceGraph
+*.hi
+*.o

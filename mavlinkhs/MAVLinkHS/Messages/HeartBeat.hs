@@ -4,10 +4,11 @@ import Data.Binary.Put
 import Data.Binary.Get
 import Data.Binary
 import MAVLinkHS.Messages.MAVLinkMessage
+import MAVLinkHS.Enums (MavAutoPilot)
 
 data HeartBeat = HeartBeat {
     typet :: Word8,
-    autopilot :: Word8,
+    autopilot :: MavAutoPilot,
     basemode :: Word8,
     custommode :: Word32,
     systemstatus :: Word8,
@@ -22,7 +23,7 @@ instance Binary HeartBeat where
     put h = do 
        putWord32be $ custommode h
        putWord8 $ typet h
-       putWord8 $ autopilot h
+       putWord8 $ fromIntegral  $ fromEnum $ autopilot h
        putWord8 $ basemode h
        putWord8 $ systemstatus h
        putWord8 $ version h
@@ -34,7 +35,7 @@ instance Binary HeartBeat where
         bm <- getWord8
         ss <- getWord8
         v <- getWord8
-        return $ HeartBeat t ap bm cm ss v
+        return $ HeartBeat t (toEnum $ fromIntegral ap) bm cm ss v
 
 
 heartBeatLen :: Word8

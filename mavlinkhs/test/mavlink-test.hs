@@ -26,6 +26,7 @@ import MAVLinkHS.MAVLink
 import MAVLinkHS.Messages.HeartBeat
 import qualified MAVLinkHS.Messages.MAVLinkMessage as ML
 import MAVLinkHS.CRC
+import MAVLinkHS.Enums
 
 import qualified Data.ByteString.Lazy as BL
 import Data.Binary.Put
@@ -61,7 +62,7 @@ serializedChk :: BL.ByteString
 serializedChk = runPut $ put (crcCalculateExtra serializedHB (ML.crcExtra testhb))
 
 testhb :: HeartBeat
-testhb = HeartBeat 2 0 216 0 4 3 
+testhb = HeartBeat 2 MAV_AUTOPILOT_GENERIC 216 0 4 3 
 
 teststart :: FrameStart 
 teststart = FrameStart 0xFE heartBeatLen 0 1 200 0
